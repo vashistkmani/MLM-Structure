@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include ('./partials/head.ejs') %>
+
+    <body>
+        <%- include ('./partials/header.ejs') %>
+            <%- include ('./partials/sidebar.ejs') %>
+
+                <main id="main" class="main">
+                    <div class="pagetitle">
+                        <h1>Dashboard</h1>
+                        <nav>
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                                <li class="breadcrumb-item active">Dashboard</li>
+                            </ol>
+                        </nav>
+                    </div><!-- End Page Title -->
+                    <div>
+                        <% if(message){ %>
+                            <p> <%=message %> </p>
+                        <% } %> 
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                          <h5 class="card-title">Category</h5>
+            
+                          <!-- Vertical Form -->
+                          <form class="row g-3" method="post" action="/addItem" enctype="multipart/form-data">
+                            <div class="col-6">
+                              <label for="inputEmail4" class="form-label">Category</label>
+                                <div class="col-sm-12" style="text-align:centre ;">
+                                  <select class="form-select" aria-label="Default select example" style="text-align: center;" name="parentId">
+                                    <option value="">-- ROOT --</option>
+                                    <% if (Array.isArray(category) && category.length>0){ %>
+                                        <% for(let i of category){%>
+                                            <option value="<%=i.id %>"><%=i.category%></option>
+                                        <% } %>
+                                    <% } %>
+                                  </select>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <label for="newCategory" class="form-label">New Category</label>
+                                <input type="text" class="form-control" id="newCategory" name="category" required>
+                            </div>
+                            <div>
+                            <div class="row mb-3">
+                                <label for="inputNumber" class="col-sm-2 col-form-label">Image Upload</label>
+                                <div class="col-sm-3">
+                                    <input class="form-control" type="file" id="formFile" name="image" required>
+                                </div>
+                                </div>
+                            </div>
+                            <div class="row mb-3" style="flex-direction: row-reverse;">
+                                <button type="submit" class="btn btn-primary col-sm-2">Submit</button>
+                            </div>
+                          </form><!-- Vertical Form -->
+            
+                        </div>
+                      </div>
+
+                </main><!-- End #main -->
+                <%- include ('./partials/footer.ejs') %>
+    </body>
+
+</html>

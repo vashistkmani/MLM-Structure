@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include ('./partials/head.ejs') %>
+
+    <body>
+
+        <%- include ('./partials/header.ejs') %>
+            <%- include ('./partials/sidebar.ejs') %>
+
+                <main id="main" class="main">
+
+                    <div class="pagetitle">
+                        <h1>Book</h1>
+                        <nav>
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item"><a href="/">Home</a></li>
+                                <li class="breadcrumb-item active">Library</li>
+                            </ol>
+                        </nav>
+                    </div><!-- End Page Title -->
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title"> Add Book </h5>
+                            <% if (message) {%>
+                                <%=message %>
+                            <% } %>
+                            <!-- Vertical Form -->
+                            <form class="row g-3" action="/categories/addDetails" method="post" enctype="multipart/form-data">
+                                <div class="row mb-3" id="select_categorySelect">
+                                    <label for="name" class="col-sm-2 col-form-label">Category</label>
+                                    <div class="col-sm-8">
+                                        <select class="form-select" aria-label="Default select example" onchange="onSelect('categorySelect')" id="categorySelect" name="parentId" required>
+                                            <option value="">Select Category</option>
+                                            <% if(data && data.length>0){ %>
+                                                <% for(let i of data) {%>
+                                                    <option value="<%=i._id%>"><%=i.category%></option>
+                                                <% } %>
+                                            <% } %>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div id="formData">
+                                    <div class="row mb-3">
+                                        <label for="inputText" class="col-sm-2 col-form-label">Name</label>
+                                        <div class="col-sm-8">
+                                            <input type="text" class="form-control" name="name" value="" required>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <label for="inputText" class="col-sm-2 col-form-label">Details</label>
+                                        <div class="col-sm-8">
+                                            <input type="text" class="form-control" name="details" value="">
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <label for="inputNumber" class="col-sm-2 col-form-label">Image Upload</label>
+                                        <div class="col-sm-8">
+                                          <input class="form-control" type="file" id="formFile" name="image" required>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <label for="inputText" class="col-sm-2 col-form-label">Contact No.</label>
+                                        <div class="col-sm-8">
+                                            <input type="text" class="form-control" name="contactNo" value="">
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <label for="inputText" class="col-sm-2 col-form-label">Father's Name</label>
+                                        <div class="col-sm-8">
+                                            <input type="text" class="form-control" name="fathersName" value="">
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <label for="inputText" class="col-sm-2 col-form-label">Class</label>
+                                        <div class="col-sm-8">
+                                            <input type="text" class="form-control" name="std" value="">
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <label for="inputText" class="col-sm-2 col-form-label">Address</label>
+                                        <div class="col-sm-8">
+                                            <input type="text" class="form-control" name="address" value="">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="text-center">
+                                    <button type="submit" class="btn btn-primary">Submit</button>
+                                    <button type="reset" class="btn btn-secondary">Reset</button>
+                                </div>
+                            </form><!-- Vertical Form -->
+
+                            <script>
+                                    function onSelect(id) {
+                                        console.log("inside function>>", id);
+                                        let value = $(`#${id}`).find(":selected").val().trim();
+                                        let text = $(`#${id}`).find(":selected").html().trim();
+                                        console.log("value >>", value);
+                                        console.log("text >>",text);
+                                        $.ajax({
+                                            url: "/getSubcategory",
+                                            method: "post",
+                                            data: { id: value },
+                                            success: function (data) {
+                                                console.log(data);
+                                                if (data.status) {
+                                                    let option =[];
+                                                    for(let i of data.data){
+                                                        if(i.category){
+                                                            let txt = `<option value=${i._id}> ${i.category} </option>`
+                                                            option.push(txt);
+                                                        }else{
+                                                            return;   
+                                                        }
+                                                    }
+                                                    if(option && option.length>0){
+                                                        $(`#${id}`).attr("onchange",`onChange('${id}','${text}')`);
+                                                        $(`#${id}`).removeAttr("name");
+                                                        $(`#${id}`).removeAttr("required");
+                                                        $(`#select_${id}`).append(
+                                                            `<div class="row mb-3" id="select_${text}" style="margin-top: 10px;">
+                                                                <label for="name" class="col-sm-2 col-form-label">Sub Category</label>
+                                                                <div class="col-sm-8">
+                                                                    <select class="form-select" aria-label="Default select example" onchange="onSelect('${text}')" id=${text} name="parentId" style="margin-left: 1%; width: 720px; " required>
+                                                                            <option value="">Select Category</option>
+                                                                            ${option}
+                                                                    </select>
+                                                            </div>
+                                                        </div>`
+                                                        )
+                                                    }
+                                                }
+                                            }
+                                        })
+                                    }
+
+                                    function onChange(id,subId){
+                                        console.log("inside onchange function", id);
+                                        console.log("subid ",subId);
+                                        $(`#select_${subId}`).remove();
+                                        let value = $(`#${id}`).find(":selected").val().trim();
+                                        let text = $(`#${id}`).find(":selected").html().trim();
+                                        console.log("value >>", value);
+                                        console.log("text >>",text);
+                                        $.ajax({
+                                            url: "/getSubcategory",
+                                            method: "post",
+                                            data: { id: value },
+                                            success: function (data) {
+                                                console.log(data);
+                                                if (data.status) {
+                                                    let option =[];
+                                                    for(let i of data.data){
+                                                        if(i.category){
+                                                            let txt = `<option value=${i._id}> ${i.category} </option>`
+                                                            option.push(txt);
+                                                        }else{
+                                                            continue;   
+                                                        }
+                                                    }
+                                                    if(option && option.length>0){
+                                                        $(`#${id}`).attr("onchange",`onChange('${id}','${text}')`);
+                                                        $(`#${id}`).removeAttr("name");
+                                                        $(`#${id}`).removeAttr("required");
+                                                        $(`#select_${id}`).append(
+                                                            `<div class="row mb-3" id="select_${text}" style="margin-top: 10px;">                                                                
+                                                                <label for="name" class="col-sm-2 col-form-label">Sub Category</label>
+                                                                <div class="col-sm-8">
+                                                                    <select class="form-select" aria-label="Default select example" onchange="onSelect('${text}')" id=${text} name="parentId" style="margin-left: 1%; width: 720px;" required>                                                   
+                                                                        <option value="">Select Category</option>
+                                                                            ${option}
+                                                                    </select>
+                                                            </div>
+                                                        </div>`
+                                                        )
+                                                    }
+                                                }
+                                            }
+                                        })
+                                    }
+                            </script>
+                        </div>
+                    </div>
+
+                </main><!-- End #main -->
+                <%- include ('./partials/footer.ejs') %>
+    </body>
+
+</html>

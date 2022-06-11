@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+    <%- include ('./partials/head.ejs') %>
+
+<body>
+    <%- include ('./partials/header.ejs') %>
+    <%- include ('./partials/sidebar.ejs') %>
+    <main id="main" class="main">
+        <div class="pagetitle">
+            <h1>Categories</h1>
+            <nav>
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                    <li class="breadcrumb-item active">View Categories</li>
+                </ol>
+            </nav>
+        </div><!-- End Page Title -->
+        <div>
+            <a href="/view/categories">Home</a>
+        </div>
+        <div class="card">
+            <div class="card-body" style="padding: 15px; ;">
+                <table id="dataTable" class="display">
+                    <thead>
+                        <tr>
+                            <th>Categories</th>
+                            <th>Image</th>
+                            <th>SubCategories</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+        <script type="text/javascript">
+            $(document).ready(function () {
+                
+                $('#dataTable').dataTable({
+                    "language": {
+                        "zeroRecords": "No Category Found"
+                    },
+                    ajax: {
+                        url: `/view/categories/datatabel?id=<%=id%>`,
+                        method: 'GET',
+                    },
+                    'lengthMenu': [10, 20, 50],
+                    columns: [
+                        { data: 'category' },
+                        { data: 'image' },
+                        { data: 'subCategory' },
+                        { data: 'action' },
+                    ]
+                });
+            });
+        
+        </script>
+
+    </main><!-- End #main -->
+    <%- include ('./partials/footer.ejs') %>
+</body>
+</html>
